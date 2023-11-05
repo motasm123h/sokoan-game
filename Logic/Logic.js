@@ -17,13 +17,14 @@ import {
     ISGOAL,
     getCoorsForPlayer,
     generateGame,
-    CountTheGoalCell,
+    CheckTheMove,
+    getId,
+    nodeEquals,
 }
 from '../HelperFunction.js'
 import node from '../class/node.js';
 
 export default class Logic {
-
 
 constructor(){
     this.canvas = document.querySelector('canvas');
@@ -65,20 +66,8 @@ constructor(){
         Moves: [],
     }
 
-    this.NextStatesPossile = {
-        up:[],
-        down:[],
-        left:[],
-        right:[],
-    };
-
     this.states = [];
     this.Nodes = [] ;
-
-
-    this.DFSstack = [];
-    this.DFSvisited = new Map();
-    this.DFSpath = [];
 }
 
 printBoardCell(context,cell,x,y){
@@ -120,14 +109,7 @@ printBoardCell(context,cell,x,y){
         this.context.drawImage(this.eggImage, cellCenterX, cellCenterY, eggSize, eggSize);
     }
 }
-    
-isValidPosition(x, y) {
-  return x >= 0 && x < this.board.length && y >= 0 && y < this.board.length && levelOneMap[x][y] !== WALL;
-}
 
-getNextState(currentState, coor, direction){
-    
-}
 isGoalState(state) {
   for (let row = 0; row < state.length; row++) {
     for (let col = 0; col < state[row].length; col++) {
@@ -139,63 +121,20 @@ isGoalState(state) {
   return true;
 }
 
-IsWin(){
-    const cnt =CountTheGoalCell();
-    let cntSuccess_BLOCK = 0;
-    for(let i=0 ; i<this.board.length ;i++){
-        const cell = this.board[i];
-        for(let j=0 ; j<cell.length ;j++){
-            if(this.board[i][j] === SUCCESS_BLOCK){
-                cntSuccess_BLOCK++;
-            }
-        }
-    }
-    return cnt === cntSuccess_BLOCK
-    }
-
-renderTheGame(){
-    this.DFS(this.board);
-
-    for(let i=0 ; i<this.board.length ; i++){
-        const row = this.board[i];
+renderTheGame(state){
+    for(let i=0 ; i<state.length ; i++){
+        const row = state[i];
         for(let j=0 ; j<row.length ; j++){
-            this.printBoardCell(this.context , this.board[i][j],j,i);
+            this.printBoardCell(this.context ,state[i][j],j,i);
         }
     }
-    const result = this.IsWin();
-    generateGame(this.level);
-    
-    if (result) {
-    
-    alert('you win');
-    
+    if (this.isGoalState(this.board)) {
+        console.log(this.Nodes.length)
+        alert(`you win ${this.Nodes.length}`);
     }
 }
 
-FindThePlayerPositon(){
-    let y = -1
-    let x=-1;
-    for(let i=0 ;i<this.board.length ;i++){
-            const row = this.board[i];
-            for(let j=0 ; j < row.length ; j++){
-                if(row[j] === PLAYER){
-                    x=i;
-                    y=j;
-                    break;
-                }
-            }
-    }
-    return { 
-        x,
-        y,
-        above:this.board[x - 1][y],
-        below:this.board[x + 1][y],
-        right:this.board[x][y + 1],
-        left:this.board[x][y - 1],
-    }
-}
-
-FindThePlayerStatePositon(state){
+FindThePlayerPositon(state){
     let y = -1
     let x=-1;
     for(let i=0 ;i<state.length ;i++){
@@ -218,165 +157,12 @@ FindThePlayerStatePositon(state){
     }
 }
 
-CheckTheMove(Coords){
-    let NextStatesPossile = {
-            up:[],
-            down:[],
-            left:[],
-            right:[],
-    };
-    const {x,y} = Coords
-
-    const avMove= {
-        up:ISWALL(this.board[x - 1][y]) || (ISEGG(this.board[x - 1][y]) && ISWALL(this.board[x - 2][y])) || (ISEGG(this.board[x - 1][y]) && ISEGG(this.board[x - 2][y])) ? 0 : 1 ,
-        down:ISWALL(this.board[x + 1][y]) || (ISEGG(this.board[x + 1][y]) && ISWALL(this.board[x + 2][y])) || (ISEGG(this.board[x + 1][y]) && ISEGG(this.board[x + 2][y])) ? 0 : 1 ,
-        right:ISWALL(this.board[x][y+1]) || (ISEGG(this.board[x][y+1]) && ISWALL(this.board[x][y+2])) || (ISEGG(this.board[x][y+1]) && ISEGG(this.board[x][y+2]))  ? 0 : 1 ,
-        left:ISWALL(this.board[x][y-1]) || (ISEGG(this.board[x][y-1]) && ISWALL(this.board[x][y-2]))  || (ISEGG(this.board[x][y-1]) && ISEGG(this.board[x][y-2])) ? 0 :1 ,
-    }
-    if(avMove.up){
-        if(ISEMPTY(this.board[x - 1][y])){
-            let newState = JSON.parse(JSON.stringify(this.board));
-
-            newState[x][y] = ISGOAL(levelOneMap[x][y]) ? GOAL :EMPTY;
-            newState[x-1][y] = PLAYER;
-
-            if(!this.isStateInList(NextStatesPossile.up,newState)){
-                NextStatesPossile.up.push(newState);
-            } 
-        }
-        else if(ISEGG(this.board[x - 1][y]) && ISEMPTY(this.board[x - 2][y])){
-            let newState = JSON.parse(JSON.stringify(this.board));
-            
-            newState[x][y]=EMPTY;
-            newState[x-1][y]=PLAYER;
-            newState[x-2][y]=EGG;
-            if(!this.isStateInList(NextStatesPossile.up,newState)){
-                NextStatesPossile.up.push(newState);
-            }
-        }
-    }
-   if(avMove.down){
-        if(ISEMPTY(this.board[x + 1][y])){
-            let newState = JSON.parse(JSON.stringify(this.board));
-
-            newState[x][y]=ISGOAL(levelOneMap[x][y]) ? GOAL :EMPTY;;
-            newState[x+1][y]=PLAYER;
-            if(!this.isStateInList(NextStatesPossile.down,newState)){
-                NextStatesPossile.down.push(newState);
-            }
-        }
-        else if(ISEGG(this.board[x + 1][y]) && ISEMPTY(this.board[x + 2][y])){
-            let newState = JSON.parse(JSON.stringify(this.board));
-            newState[x][y]=EMPTY;
-            newState[x+1][y]=PLAYER;
-            newState[x+2][y]=EGG;
-            if(!this.isStateInList(NextStatesPossile.down,newState)){
-                NextStatesPossile.down.push(newState);
-            }
-        }
-    }
-    if(avMove.left){
-        if(ISEMPTY(this.board[x][y-1])){
-            let newState = JSON.parse(JSON.stringify(this.board));
-            newState[x][y]=ISGOAL(levelOneMap[x][y]) ? GOAL :EMPTY;
-            newState[x][y-1]=PLAYER
-            if(!this.isStateInList(NextStatesPossile.left,newState)){
-                NextStatesPossile.left.push(newState);
-            }
-        }
-        if(ISEGG(this.board[x][y-1]) && ISEMPTY(this.board[x][y-2])){
-            let newState = JSON.parse(JSON.stringify(this.board));
-            newState[x][y]=EMPTY;
-            newState[x][y-1]=PLAYER;
-            newState[x][y-2]=EGG;
-            if(!this.isStateInList(NextStatesPossile.left,newState)){
-                NextStatesPossile.left.push(newState);
-            }
-        }
-    }
-    if(avMove.right){
-        if(ISEMPTY(this.board[x][y+1])){
-            let newState = JSON.parse(JSON.stringify(this.board));
-            newState[x][y]=ISGOAL(levelOneMap[x][y]) ? GOAL :EMPTY;
-            newState[x][y+1]=PLAYER
-            if(!this.isStateInList(NextStatesPossile.right,newState)){
-                NextStatesPossile.right.push(newState);
-            }
-        }
-        if(ISEGG(this.board[x][y+1]) && ISEMPTY(this.board[x][y+2])){
-            let newState = JSON.parse(JSON.stringify(this.board));
-            newState[x][y]=EMPTY;
-            newState[x][y+1]=PLAYER;
-            newState[x][y+2]=EGG;
-            if(!this.isStateInList(NextStatesPossile.right,newState)){
-                NextStatesPossile.right.push(newState);
-            }
-        }
-    }
-    // console.log(NextStatesPossile);
-    return {
-    newState:NextStatesPossile,
-    NextMove:avMove
-    };
-}
-
-DFS(state){
-    const plyerCoor = this.FindThePlayerStatePositon(state);
-    const {x,y}=plyerCoor;
-    this.DFSstack.push(state);
-    while(this.DFSstack.length > 0){
-        const state = this.DFSstack.pop();
-        // console.log(state)
-        if(this.isGoalState(state)){
-            // console.log(state)
-            return true;
-        }
-        const plyerCoor = this.FindThePlayerStatePositon(state);
-        const {newState} = this.CheckTheMove(plyerCoor);
-        const newStatess = [
-        ...newState.up, 
-        ...newState.down,
-        ...newState.left,  
-        ...newState.right
-        ];
-        console.log(newStatess);
-        // if(this.DFSstack.length >= 3){
-        //     return false
-        // }
-
-        for (let move of newStatess) {
-            if (!this.DFSvisited.has(move)){
-                this.DFSvisited.set(move);
-                this.DFSstack.push(move);
-            }
-        }
-    }
-
-    if (this.DFSstack.some((state) => this.DFS(state))) {
-        return true;
-    }
-
-    return false;
-}
-// DFS(state){
-//     if(this.IsWin(state))
-//     {
-//          return true
-//     }
-//     // this.DFSstack.push(state)
-//     let {x,y} = this.FindThePlayerPositon();
-
-// }
-
 MovePlayer(Coords,direction){
-    // this.Moves.Moves.push(direction);
     if(this.Nodes.length === 0){
         this.firstNode = new node(this.board,"");
         this.Nodes.push(this.firstNode);
     }
-
     this.board[Coords.x][Coords.y] =  ISGOAL(levelOneMap[Coords.x][Coords.y]) ? GOAL : EMPTY;
-    
     
     if(direction === "up"){
         this.board[Coords.x - 1][Coords.y] = PLAYER;
@@ -387,18 +173,14 @@ MovePlayer(Coords,direction){
     }else if(direction === "right"){
         this.board[Coords.x][Coords.y + 1] = PLAYER;
     }
+
     let moveNode = new node(this.board , direction);
-    moveNode.parent=this.firstNode;
-    moveNode.cost = this.firstNode.cost + 1;
-    moveNode.depth = this.firstNode.depth + 1;
+    moveNode.appendChildren(this.firstNode);
     this.firstNode = moveNode;
     this.Nodes.push(moveNode);
 
-
-    const coor = this.FindThePlayerPositon();
-    this.CheckTheMove(coor);
-
-    // console.log(this.board);
+    // const coor = this.FindThePlayerPositon(this.board);
+    // CheckTheMove(coor,this.board);
     return this.board;
 }
 
@@ -429,39 +211,16 @@ Move(Coords,direction){
     }
 
     let newsState = JSON.parse(JSON.stringify(this.board));
-    let {newState} = this.CheckTheMove(Coords);
-    console.log((newState["up"]));
+
     
-    if (ISEMPTY(adjacentCell[adjacentCell[direction]]) ) {
+    if (ISEMPTY(adjacentCell[direction])) {
     newsState = this.MovePlayer(Coords, direction)
     }
     if (ISEGG(adjacentCell[direction])) {
     newsState = this.MovePlayerAndEgg(Coords, direction)
     }
     return newsState;
-    // this.board = newState[direction]
 }
-
-isStateInList(NextStatesPossile , state) {
-    for(let i=0 ;i<NextStatesPossile.length ;i++) {
-        if(this.compareStates(NextStatesPossile[i], state)){
-            return true;
-        }
-    }
-    return false;
-
-}; 
-compareStates(state1,state2) {
-    for(let i=0 ;i<state1.length ;i++) {
-        for(let j=0 ;j<state1.length ;j++){
-            if(state1[i][j] != state2[i][j]){
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
 
 
 }

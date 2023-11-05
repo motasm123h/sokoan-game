@@ -14,4 +14,10 @@ export default class node {
     findCost(){
         return this.cost;
     }
+
+    appendChildren(node){
+        this.parent=node;
+        this.depth =node.depth + 1 ;
+        this.cost = node.cost + 1 ;
+    }
 }

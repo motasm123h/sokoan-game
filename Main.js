@@ -1,11 +1,15 @@
 import { DIRECTIONS,keys } from "./Structure/Structure.js";
 import Logic from "./Logic/Logic.js";
+import dfs from "./Logic/dfs.js";
+import bfs from "./Logic/bfs.js";
 
 const logic = new Logic();
-logic.renderTheGame();
+const dfsSolve = new dfs();
+const bfsSolve = new bfs();
+logic.renderTheGame(logic.board);
 
 document.addEventListener('keydown', (e)=>{
-    const PlayerCoor = logic.FindThePlayerPositon()
+    const PlayerCoor = logic.FindThePlayerPositon(logic.board)
     // console.log(PlayerCoor);
     switch(e.key){
         case keys.up:
@@ -23,9 +27,8 @@ document.addEventListener('keydown', (e)=>{
             break;
         default:
     }
-    logic.renderTheGame()
+    logic.renderTheGame(logic.board)
 })
-const PlayerCoor = logic.FindThePlayerPositon()
 
-// console.log(logic.dfs(PlayerCoor.x,PlayerCoor.y,,logic.board));
-logic.DFS(logic.board);
+// console.log(dfsSolve.DFS(logic.board)?'the solution found using DFS' : "the solution not found using DFS ");
+console.log(bfsSolve.BFS(logic.board)?'the solution found using BFS' : "the solution not found using BFS");
