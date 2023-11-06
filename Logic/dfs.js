@@ -14,6 +14,7 @@ import {
 } from '../Structure/Structure.js';
 
 import {
+    FindMaxDepth,
     ISEGG,
     ISWALL,
     ISPLAYER,
@@ -39,72 +40,54 @@ export default class dfs {
         this.DFSstack =[];
         this.DFSvisited = new Map();
         this.NodesDFS = [] ;
+        this.nodes = [];
 
     }
 
 
-    DFS(state){
-    this.DFSstack.push(state);
-    let Fnode = new node(state,"");
-    this.NodesDFS.push(Fnode);
-    let previousState;
+    DFS(node){
+    const startTime = performance.now();
+    this.DFSstack.push(node);
+    this.nodes.push(node);
 
     while(this.DFSstack.length > 0){
-        const state = this.DFSstack.pop();
-        const plyerCoorNEW = this.logic.FindThePlayerPositon(state);
+        let node = this.DFSstack.pop();
 
-        if(this.DFSstack.length === 0){
-            previousState = state;
-        }
-        else{
-            const previousCoor = this.logic.FindThePlayerPositon(previousState);
-            const stateCoor = this.logic.FindThePlayerPositon(state);
-            if(previousCoor.x - 1 === stateCoor.x && previousCoor.y  === stateCoor.y)
-            {   
-                let newNode = new node(state,"up");
-                newNode.appendChildren(this.NodesDFS[this.NodesDFS.length - 1]);
-                this.NodesDFS.push(newNode);
+        if(this.logic.isGoalState(node.state)){
+            const endTime = performance.now();
+            const MaxTreeDepth = FindMaxDepth(this.nodes);
+            console.log(`Time taken by DFS algorithm: ${endTime - startTime} milliseconds`);
+            console.log('the visited node ', this.DFSvisited.size);
+            console.log('the solution cost is : ' , node.cost );
+            console.log('the solution depth is : ' , node.depth );
+            console.log('Max tree depth : ' , MaxTreeDepth);
 
+            console.log("the solution path");
+            let path = [];
+            while(node.parent !== null){
+                path.push(node.action)
+                node = node.parent;
             }
-            if(previousCoor.x + 1 === stateCoor.x && previousCoor.y  === stateCoor.y){
-                let newNode = new node(state,"down");
-                newNode.appendChildren(this.NodesDFS[this.NodesDFS.length - 1]);
-                this.NodesDFS.push(newNode);
+            while(path.length > 0){
+                let pa = path.pop();
+                console.log(pa);
             }
-            if(previousCoor.x === stateCoor.x && previousCoor.y + 1  === stateCoor.y){
-                let newNode = new node(state,"right");
-                newNode.appendChildren(this.NodesDFS[this.NodesDFS.length - 1]);
-                this.NodesDFS.push(newNode);
-            }
-            if(previousCoor.x  === stateCoor.x && previousCoor.y - 1 === stateCoor.y){
-                let newNode = new node(state,"left");
-                newNode.appendChildren(this.NodesDFS[this.NodesDFS.length - 1]);
-                this.NodesDFS.push(newNode);
-            }
-        }
-        previousState = state; 
-        if(this.logic.isGoalState(state)){
-            let nodeLast = this.NodesDFS.pop();
-            console.log('the solution cost is :',nodeLast.depth ,'this is by using the DFS Algorithm');
             return true;
         }
-        const plyerCoor = this.logic.FindThePlayerPositon(state);
-        const {newState} = CheckTheMove(plyerCoor,state);
-        const newStatess = [
-        ...newState.left,  
-        ...newState.right,
-        ...newState.down,
-        ...newState.up, 
+        const plyerCoor = this.logic.FindThePlayerPositon(node.state);
+        const {NextNode} = CheckTheMove(plyerCoor,node);
+        const newNodes = [
+        ...NextNode.up, 
+        ...NextNode.down,
+        ...NextNode.right,
+        ...NextNode.left,  
         ];
 
-        // if(this.DFSstack.length >= 2){
-        //     return false
-        // }
-
-        for (let move of newStatess) {
-            let id = getId(move);
+        for (let Nextnode of newNodes) {
+            let id = getId(Nextnode.state);
             if (!this.DFSvisited.has(id) ){                
-                this.DFSstack.push(move);
+                this.nodes.push(Nextnode);
+                this.DFSstack.push(Nextnode);
                 this.DFSvisited.set(id,true);
             }
         }

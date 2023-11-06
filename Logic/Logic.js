@@ -179,8 +179,8 @@ MovePlayer(Coords,direction){
     this.firstNode = moveNode;
     this.Nodes.push(moveNode);
 
-    // const coor = this.FindThePlayerPositon(this.board);
-    // CheckTheMove(coor,this.board);
+    const coor = this.FindThePlayerPositon(this.board);
+    CheckTheMove(coor,moveNode);
     return this.board;
 }
 

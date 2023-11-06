@@ -14,11 +14,14 @@ import {
 } from '../Structure/Structure.js';
 
 import {
+    FindMaxDepth,
+    FindNode,
     ISEGG,
     ISWALL,
     ISPLAYER,
     ISEMPTY,
     ISGOAL,
+    FindPath,
     getCoorsForPlayer,
     generateGame,
     CountTheGoalCell,
@@ -39,75 +42,60 @@ export default class dfs {
         this.BFSQueue =[];
         this.BDSVisited = new Map();
         this.NodesBFS = [] ;
-
+        this.nodes = [];
     }
 
 
-    BFS(state){
-    this.BFSQueue.push(state);
-    let Fnode = new node(state,"");
-    this.NodesBFS.push(Fnode);
-    let previousState;
+    BFS(node){
+    const startTime = performance.now();
+    this.BFSQueue.push(node);
 
     while(this.BFSQueue.length > 0){
-        // const state = this.BFSQueue.pop();
-        const state = this.BFSQueue.shift();
-        console.log(state);
-
-        if(this.BFSQueue.length === 0){
-            previousState = state;
-        }
-        else{
-            const previousCoor = this.logic.FindThePlayerPositon(previousState);
-            const stateCoor = this.logic.FindThePlayerPositon(state);
-            if(previousCoor.x > stateCoor.x && previousCoor.y  === stateCoor.y)
-            {   
-                let newNode = new node(state,"up");
-                newNode.appendChildren(this.NodesBFS[this.NodesBFS.length - 1]);
-                this.NodesBFS.push(newNode);
-
-            }
-            if(previousCoor.x < stateCoor.x && previousCoor.y  === stateCoor.y){
-                let newNode = new node(state,"down");
-                newNode.appendChildren(this.NodesBFS[this.NodesBFS.length - 1]);
-                this.NodesBFS.push(newNode);
-            }
-            if(previousCoor.x === stateCoor.x && previousCoor.y < stateCoor.y){
-                let newNode = new node(state,"right");
-                newNode.appendChildren(this.NodesBFS[this.NodesBFS.length - 1]);
-                this.NodesBFS.push(newNode);
-            }
-            if(previousCoor.x  === stateCoor.x && previousCoor.y > stateCoor.y){
-                let newNode = new node(state,"left");
-                newNode.appendChildren(this.NodesBFS[this.NodesBFS.length - 1]);
-                this.NodesBFS.push(newNode);
-            }
-        }
-        previousState = state; 
+        let node = this.BFSQueue.shift();
+        console.log(this.BFSQueue.length);
         
-        if(this.logic.isGoalState(state)){
-            let nodeLast = this.NodesBFS.pop();
-            // let nodeLasts = this.NodesBFS.pop();
-            console.log(this.NodesBFS)
-            console.log('the solution cost is :',nodeLast.depth ,'this is by using the BFS Algorithm');
+        if(this.logic.isGoalState(node.state)){
+            const endTime = performance.now();
+            const MaxTreeDepth = FindMaxDepth(this.nodes);
+
+            console.log(`Time taken by BFS algorithm: ${endTime - startTime} milliseconds`);
+            console.log('the visited node ', this.BDSVisited.size);
+            console.log('the solution cost is : ' , node.cost );
+            console.log('the solution depth is : ' , node.depth );
+            console.log('Max tree depth : ' , MaxTreeDepth);
+
+            console.log("the solution path");
+            let path = [];
+            while(node.parent !== null){
+                path.push(node.action)
+                node = node.parent;
+            }
+            while(path.length > 0){
+                let pa = path.pop();
+                console.log(pa);
+            }
             return true;
         }
 
-        const plyerCoor = this.logic.FindThePlayerPositon(state);
-        const {newState} = CheckTheMove(plyerCoor,state);
-        const newStatess = [
-        ...newState.up, 
-        ...newState.down,
-        ...newState.right,
-        ...newState.left,  
+        const plyerCoor = this.logic.FindThePlayerPositon(node.state);
+        const {NextNode} = CheckTheMove(plyerCoor,node);
+
+        // ...newState.left,  
+        // ];
+        const newNodes = [
+        ...NextNode.up, 
+        ...NextNode.down,
+        ...NextNode.right,
+        ...NextNode.left,  
         ];
-        console.log(this.BFSQueue.length);
+
+        // console.log(this.BFSQueue.length);
         // if(this.BFSQueue.length >= 25095){
         //     return false
         // }
 
-        for (let move of newStatess) {
-            let id = getId(move);
+        for (let move of newNodes) {
+            let id = getId(move.state);
             if (!this.BDSVisited.has(id) ){                
                 this.BFSQueue.push(move);
                 this.BDSVisited.set(id,true);
