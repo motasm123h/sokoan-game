@@ -31,5 +31,5 @@ const bfsSolve = new bfs();
 //     logic.renderTheGame(logic.board)
 // })
 let firstNode =  new node(logic.board,"");
-console.log(dfsSolve.DFS(firstNode)?'the solution found using DFS' : "the solution not found using DFS ");
-// console.log(bfsSolve.BFS(firstNode)?'the solution found using BFS' : "the solution not found using BFS");
+// console.log(dfsSolve.DFS(firstNode)?'the solution found using DFS' : "the solution not found using DFS ");
+console.log(bfsSolve.BFS(firstNode)?'the solution found using BFS' : "the solution not found using BFS");

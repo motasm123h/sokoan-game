@@ -321,37 +321,14 @@ export const CheckTheMove = (Coords,Node) => {
     NextNode:NextNodePossile,
     };
 }
-export const FindNode = (node1, board) =>{
-    // console.log(node1)
-    for(let i=0; i < node1.length - 1; i++){  
-        // console.log(node1[i]);  
-        // let node = node1[i];  
-        if(JSON.stringify(node1[i].state) === JSON.stringify(board)) {
-            return node1[i];
-        }
-    }
-  
-  return false;
-}
-export const FindPath = (Fnode) => {
-    let nodes =[];
-    while(Fnode.parent) {
-    // console.log("hihi");
-        // console.log(Fnode.action);
-        nodes.push(Fnode.action);
-        Fnode = Fnode.parent;
-    }
-
-    return nodes;
-}
 
 export const FindMaxDepth = (nodes) => {
-let minDepth = 0;
-for(let i=0 ;i<nodes.length ;i++) {
-    if(minDepth < nodes[i].depth) {
-        minDepth = nodes[i].depth;
+    let minDepth = 0;
+    for(let i=0 ;i<nodes.length ;i++) {
+        if(minDepth < nodes[i].depth) {
+            minDepth = nodes[i].depth;
+        }
     }
-}
-return minDepth;
+    return minDepth;
 }
 

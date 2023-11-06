@@ -1,38 +1,11 @@
 
 import Logic from './Logic.js';
-
-import {
-    EMPTY,
-    GOAL,
-    PLAYER,
-    EGG,
-    WALL,
-    SIZE,
-    MULTIPLIER,
-    SUCCESS_BLOCK,
-    levelOneMap
-} from '../Structure/Structure.js';
-
 import {
     FindMaxDepth,
-    ISEGG,
-    ISWALL,
-    ISPLAYER,
-    ISEMPTY,
-    ISGOAL,
-    getCoorsForPlayer,
-    generateGame,
-    CountTheGoalCell,
     CheckTheMove,
-    isStateInList,
-    compareStates,
     getId
 }
-
 from '../HelperFunction.js'
-import node from '../class/node.js';
-
-// const initialState = logic.board;
 
 export default class dfs {
     constructor(){
@@ -41,9 +14,7 @@ export default class dfs {
         this.DFSvisited = new Map();
         this.NodesDFS = [] ;
         this.nodes = [];
-
     }
-
 
     DFS(node){
     const startTime = performance.now();

@@ -2,39 +2,11 @@
 import Logic from './Logic.js';
 
 import {
-    EMPTY,
-    GOAL,
-    PLAYER,
-    EGG,
-    WALL,
-    SIZE,
-    MULTIPLIER,
-    SUCCESS_BLOCK,
-    levelOneMap
-} from '../Structure/Structure.js';
-
-import {
     FindMaxDepth,
-    FindNode,
-    ISEGG,
-    ISWALL,
-    ISPLAYER,
-    ISEMPTY,
-    ISGOAL,
-    FindPath,
-    getCoorsForPlayer,
-    generateGame,
-    CountTheGoalCell,
     CheckTheMove,
-    isStateInList,
-    compareStates,
     getId
 }
-
 from '../HelperFunction.js'
-import node from '../class/node.js';
-
-// const initialState = logic.board;
 
 export default class dfs {
     constructor(){
@@ -52,11 +24,10 @@ export default class dfs {
 
     while(this.BFSQueue.length > 0){
         let node = this.BFSQueue.shift();
-        console.log(this.BFSQueue.length);
         
         if(this.logic.isGoalState(node.state)){
             const endTime = performance.now();
-            const MaxTreeDepth = FindMaxDepth(this.nodes);
+            let MaxTreeDepth = FindMaxDepth(this.nodes);
 
             console.log(`Time taken by BFS algorithm: ${endTime - startTime} milliseconds`);
             console.log('the visited node ', this.BDSVisited.size);
@@ -98,6 +69,7 @@ export default class dfs {
             let id = getId(move.state);
             if (!this.BDSVisited.has(id) ){                
                 this.BFSQueue.push(move);
+                this.nodes.push(move);
                 this.BDSVisited.set(id,true);
             }
         }
