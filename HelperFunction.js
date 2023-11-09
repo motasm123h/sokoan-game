@@ -14,9 +14,9 @@ import node from './class/node.js';
 export const ISWALL = (cell) => cell === WALL;
 export const ISPLAYER = (cell) => cell === PLAYER;
 export const ISEMPTY = (cell) => cell === EMPTY || cell === GOAL;
-export const ISGOAL = (cell) => cell === GOAL;
+export const ISGOAL = (cell) => cell === GOAL || cell === SUCCESS_BLOCK ;
 export const ISEGG = (cell) => cell === EGG || cell === SUCCESS_BLOCK;
-
+// export const ISSUCCESS_BLOCK =(cell) => cell === SUCCESS_BLOCK;
 export const getCoords = (x,y,direction,move=1) => {
     if(direction === "left"){
         return y - move;
@@ -137,7 +137,7 @@ export const CheckTheMove = (Coords,Node) => {
         else if(ISEGG(Node.state[x - 1][y]) && ISGOAL(Node.state[x - 2][y])){
             let newState = JSON.parse(JSON.stringify(Node.state));
             
-            newState[x][y]=EMPTY;
+            newState[x][y]=ISGOAL(levelOneMap[x][y]) ? GOAL : EMPTY;
             newState[x-1][y]=PLAYER;
             newState[x-2][y]=SUCCESS_BLOCK;
 
@@ -154,7 +154,7 @@ export const CheckTheMove = (Coords,Node) => {
         else if(ISEGG(Node.state[x - 1][y]) && ISEMPTY(Node.state[x - 2][y])){
             let newState = JSON.parse(JSON.stringify(Node.state));
             
-            newState[x][y]=EMPTY;
+            newState[x][y]=ISGOAL(levelOneMap[x][y]) ? GOAL : EMPTY;
             newState[x-1][y]=PLAYER;
             newState[x-2][y]=EGG;
 
@@ -187,7 +187,7 @@ export const CheckTheMove = (Coords,Node) => {
         }
         else if(ISEGG(Node.state[x + 1][y]) && ISGOAL(Node.state[x + 2][y])){
             let newState = JSON.parse(JSON.stringify(Node.state));
-            newState[x][y]=EMPTY;
+            newState[x][y]=ISGOAL(levelOneMap[x][y]) ? GOAL : EMPTY;
             newState[x+1][y]=PLAYER;
             newState[x+2][y]=SUCCESS_BLOCK;
 
@@ -202,7 +202,7 @@ export const CheckTheMove = (Coords,Node) => {
         }
         else if(ISEGG(Node.state[x + 1][y]) && ISEMPTY(Node.state[x + 2][y])){
             let newState = JSON.parse(JSON.stringify(Node.state));
-            newState[x][y]=EMPTY;
+            newState[x][y]=ISGOAL(levelOneMap[x][y]) ? GOAL : EMPTY;
             newState[x+1][y]=PLAYER;
             newState[x+2][y]=EGG;
 
@@ -234,7 +234,7 @@ export const CheckTheMove = (Coords,Node) => {
         }
         else if(ISEGG(Node.state[x][y-1]) && ISGOAL(Node.state[x][y-2])){
             let newState = JSON.parse(JSON.stringify(Node.state));
-            newState[x][y]=EMPTY;
+            newState[x][y]=ISGOAL(levelOneMap[x][y]) ? GOAL : EMPTY;
             newState[x][y-1]=PLAYER;
             newState[x][y-2]=SUCCESS_BLOCK;
 
@@ -249,7 +249,7 @@ export const CheckTheMove = (Coords,Node) => {
         }
         else if(ISEGG(Node.state[x][y-1]) && ISEMPTY(Node.state[x][y-2])){
             let newState = JSON.parse(JSON.stringify(Node.state));
-            newState[x][y]=EMPTY;
+            newState[x][y]=ISGOAL(levelOneMap[x][y]) ? GOAL : EMPTY;
             newState[x][y-1]=PLAYER;
             newState[x][y-2]=EGG;
 
@@ -280,7 +280,7 @@ export const CheckTheMove = (Coords,Node) => {
         }
         else if(ISEGG(Node.state[x][y+1]) && ISGOAL(Node.state[x][y+2])){
             let newState = JSON.parse(JSON.stringify(Node.state));
-            newState[x][y]=EMPTY;
+            newState[x][y]=ISGOAL(levelOneMap[x][y]) ? GOAL : EMPTY;
             newState[x][y+1]=PLAYER;
             newState[x][y+2]=SUCCESS_BLOCK;
 
@@ -295,16 +295,13 @@ export const CheckTheMove = (Coords,Node) => {
         }
         else if(ISEGG(Node.state[x][y+1]) && ISEMPTY(Node.state[x][y+2])){
             let newState = JSON.parse(JSON.stringify(Node.state));
-            newState[x][y]=EMPTY;
+            newState[x][y]=ISGOAL(levelOneMap[x][y]) ? GOAL : EMPTY;
             newState[x][y+1]=PLAYER;
             newState[x][y+2]=EGG;
-
-
             
             let newNode = new node(newState,"left");
             newNode.appendChildren(Node);
-            NextNodePossile.left.push(newNode);
-
+            NextNodePossile.right.push(newNode);
 
             if(!isStateInList(NextStatesPossile.right,newState)){
                 NextStatesPossile.right.push(newState);
@@ -313,7 +310,7 @@ export const CheckTheMove = (Coords,Node) => {
     }
     // console.log(NextStatesPossile);
     // console.log(nodes);
-    // console.log(NextNodePossile);
+    console.log(NextNodePossile);
 
     return {
     newState:NextStatesPossile,

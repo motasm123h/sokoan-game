@@ -12,14 +12,13 @@ export default class dfs {
         this.logic = new Logic();
         this.DFSstack =[];
         this.DFSvisited = new Map();
-        this.NodesDFS = [] ;
         this.nodes = [];
     }
 
     DFS(node){
     const startTime = performance.now();
     this.DFSstack.push(node);
-    this.nodes.push(node);
+    // this.nodes.push(node);
 
     while(this.DFSstack.length > 0){
         let node = this.DFSstack.pop();
@@ -53,7 +52,7 @@ export default class dfs {
         ...NextNode.right,
         ...NextNode.left,  
         ];
-
+        console.log(this.DFSstack.length);
         for (let Nextnode of newNodes) {
             let id = getId(Nextnode.state);
             if (!this.DFSvisited.has(id) ){                

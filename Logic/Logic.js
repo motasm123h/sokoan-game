@@ -165,6 +165,7 @@ MovePlayer(Coords,direction){
     this.board[Coords.x][Coords.y] =  ISGOAL(levelOneMap[Coords.x][Coords.y]) ? GOAL : EMPTY;
     
     if(direction === "up"){
+
         this.board[Coords.x - 1][Coords.y] = PLAYER;
     }else if(direction === "down"){
         this.board[Coords.x + 1][Coords.y] = PLAYER;
@@ -181,6 +182,7 @@ MovePlayer(Coords,direction){
 
     const coor = this.FindThePlayerPositon(this.board);
     CheckTheMove(coor,moveNode);
+    
     return this.board;
 }
 
