@@ -299,7 +299,7 @@ export const CheckTheMove = (Coords,Node) => {
             newState[x][y+1]=PLAYER;
             newState[x][y+2]=EGG;
             
-            let newNode = new node(newState,"left");
+            let newNode = new node(newState,"right");
             newNode.appendChildren(Node);
             NextNodePossile.right.push(newNode);
 
@@ -310,7 +310,7 @@ export const CheckTheMove = (Coords,Node) => {
     }
     // console.log(NextStatesPossile);
     // console.log(nodes);
-    console.log(NextNodePossile);
+    // console.log(NextNodePossile);
 
     return {
     newState:NextStatesPossile,
@@ -329,3 +329,47 @@ export const FindMaxDepth = (nodes) => {
     return minDepth;
 }
 
+
+export const FintConst = (nodes) => {
+    return node.cost + 1 ;
+}
+
+export const heuristic = (currentNode, goalNodes) => {
+  let minHeuristicValue = Number.POSITIVE_INFINITY;
+
+  for (let i = 0; i < goalNodes.length; i++) {
+    const goalNode = goalNodes[i];
+    // console.log(goalNode);
+
+    const dx = Math.abs(currentNode.x - goalNode.x);
+    const dy = Math.abs(currentNode.y - goalNode.y);
+    const heuristicValue = Math.sqrt(dx * dx + dy * dy);
+
+    if (heuristicValue < minHeuristicValue) {
+      minHeuristicValue = heuristicValue;
+    }
+  }
+  return minHeuristicValue;
+}
+
+export function findCoordGoal(state){
+    let coords =[]
+    for(let i=0 ;i<state.length ;i++){
+        for(let j=0 ;j<state.length ;j++){
+            if(ISGOAL(state[i][j])){
+                let coor = {
+                    x:i,
+                    y:j,
+                }
+                coords.push(coor);
+            }
+        }
+    }
+
+    return coords;
+}
+
+
+export function findF(cost,hiuristic){
+    return cost+hiuristic;
+}

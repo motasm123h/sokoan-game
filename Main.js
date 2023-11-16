@@ -3,12 +3,14 @@ import Logic from "./Logic/Logic.js";
 import dfs from "./Logic/dfs.js";
 import bfs from "./Logic/bfs.js";
 import ucf from "./Logic/ucf.js";
+import a_star from "./Logic/a_star.js";
 import node from "./class/node.js";
 
 const logic = new Logic();
 const dfsSolve = new dfs();
 const bfsSolve = new bfs();
 const ucfSolve = new ucf();
+const aStarSolve = new a_star();
 logic.renderTheGame(logic.board);
 
 document.addEventListener('keydown', (e)=>{
@@ -35,9 +37,14 @@ document.addEventListener('keydown', (e)=>{
 
 let firstNode =  new node(logic.board,"");
 
-console.log(dfsSolve.DFS(firstNode)?'the solution found using DFS' : "the solution not found using DFS ");
+// console.log(dfsSolve.DFS(firstNode)?'the solution found using DFS' : "the solution not found using DFS ");
 // console.log(bfsSolve.BFS(firstNode)?'the solution found using BFS' : "the solution not found using BFS");
-// console.log(ucfSolve.UCS(firstNode)?'the solution found using UCS' : "the solution not found using UCS");
+console.log(ucfSolve.UCS(firstNode)?'the solution found using UCS' : "the solution not found using UCS");
+// console.log(aStarSolve.ASTAR(firstNode)?'the solution found using A*' : "the solution not found using A*");
+
+// let value =ucfSolve.PriorityQueue.queue[0];
+// ucfSolve.find(value)
+// ucfSolve.find(value);
 
 const element ={
     name:"motasm",
@@ -51,6 +58,7 @@ const element3 ={
     name:"motasm3",
     cost:0,
 }
+
 // ucfSolve.addelements(element);
 // ucfSolve.addelements(element1);
 // // ucfSolve.addelements(element2);

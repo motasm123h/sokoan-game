@@ -18,16 +18,21 @@ export default class dfs {
     DFS(node){
     const startTime = performance.now();
     this.DFSstack.push(node);
+    let DFSvisited = new Map();
     // this.nodes.push(node);
 
     while(this.DFSstack.length > 0){
         let node = this.DFSstack.pop();
-
+        let id = getId(node.state);
+        if(DFSvisited.has(id) ){                
+            continue;
+        }
+        
         if(this.logic.isGoalState(node.state)){
             const endTime = performance.now();
             const MaxTreeDepth = FindMaxDepth(this.nodes);
             console.log(`Time taken by DFS algorithm: ${endTime - startTime} milliseconds`);
-            console.log('the visited node ', this.DFSvisited.size);
+            console.log('the visited node ', DFSvisited.size);
             console.log('the solution cost is : ' , node.cost );
             console.log('the solution depth is : ' , node.depth );
             console.log('Max tree depth : ' , MaxTreeDepth);
@@ -52,15 +57,16 @@ export default class dfs {
         ...NextNode.right,
         ...NextNode.left,  
         ];
-        console.log(this.DFSstack.length);
+        // console.log(this.DFSstack.length);
         for (let Nextnode of newNodes) {
-            let id = getId(Nextnode.state);
-            if (!this.DFSvisited.has(id) ){                
-                this.nodes.push(Nextnode);
+            let id = getId(node.state);
+            if (!DFSvisited.has(id) ){                
                 this.DFSstack.push(Nextnode);
-                this.DFSvisited.set(id,true);
+                this.nodes.push(Nextnode);
             }
         }
+        let idd = getId(node.state);
+        DFSvisited.set(idd,true);
     }
     return false;
 }

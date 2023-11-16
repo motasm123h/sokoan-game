@@ -5,26 +5,29 @@ import {
     CheckTheMove,
     getId,
     FintConst,
+    findCoordGoal,
+    heuristic,
+    findF,
 }
+
 from '../HelperFunction.js'
 
 export default class ucf{
     constructor(){
-        this.UCFVisited = new Map();
+        this.AVisited = new Map();
         this.logic = new Logic();
         this.PriorityQueue = new PriorityQueue();
         this.nodes = [];
     }
     
-
-    UCS(node){
+    ASTAR(node){
         const startTime = performance.now();
         this.PriorityQueue.enqueue(node);
         // console.log(this.PriorityQueue);
         while(!this.PriorityQueue.isEmpty()){
             let node = this.PriorityQueue.dequeue();
              let id = getId(node.state);
-            if (this.UCFVisited.has(id) ){                
+            if (this.AVisited.has(id) ){                
                 continue;
             }
 
@@ -33,7 +36,7 @@ export default class ucf{
                 let MaxTreeDepth = FindMaxDepth(this.nodes);
 
                 console.log(`Time taken by UCS algorithm: ${endTime - startTime} milliseconds`);
-                console.log('the visited node ', this.UCFVisited.size);
+                console.log('the visited node ', this.AVisited.size);
                 console.log('the solution cost is : ' , node.cost );
                 console.log('the solution depth is : ' , node.depth );
                 console.log('Max tree depth : ' , MaxTreeDepth);
@@ -57,32 +60,47 @@ export default class ucf{
             ...NextNode.left,  
             ];
 
-            // if(this.PriorityQueue.length() >=4){
-            //     return true;
-            // }
-
+            // console.log(findCoordGoal(node.state));
+            // console.log(heuristic({plyerCoor.x,plyerCoor.y},coors));
+            // console.log(heuristic({ x: plyerCoor.x, y: plyerCoor.y }, coors));
+         
+            if(this.PriorityQueue.length() >=1){
+                return true;
+            }
+            
             for(let node of newNodes){
                 const cost = FintConst(node);
-                let id = getId(node.state);
 
-                if(!this.UCFVisited.has(id) && !this.PriorityQueue.contains(node)){
+                let coors = findCoordGoal(node.state);
+                let heuristicValue = heuristic({ x: plyerCoor.x, y: plyerCoor.y }, coors);
+
+                let id = getId(node.state);
+                let f = findF(node.cost , heuristicValue);
+                
+                console.log(node.state);
+                console.log(node.cost);
+                console.log(heuristicValue);
+                if(!this.AVisited.has(id) && !this.PriorityQueue.contains(node)){
                     this.PriorityQueue.enqueue(node);
                     this.nodes.push(node);
                 }
+                else if(!this.AVisited.has(id)){
 
-                else if(this.UCFVisited.has(id) && cost < this.UCFVisited.get(id).cost && this.find(this.UCFVisited.get(id))){
-                    this.PriorityQueue.removeElement(this.UCFVisited.get(id));
+                }
+                else if(this.AVisited.has(id) && cost < this.AVisited.get(id).cost && this.find(this.AVisited.get(id))){
+                    this.PriorityQueue.removeElement(this.AVisited.get(id));
                     this.PriorityQueue.enqueue(node)
                 }
             }
             let idd = getId(node.state);
-            this.UCFVisited.set(idd,node);
-
+            this.AVisited.set(idd,node);
         }
     }
+    
     find(element){
         console.log(this.PriorityQueue.contains(element))
     }
+
     addelements(element){
         this.PriorityQueue.enqueue(element);
     }

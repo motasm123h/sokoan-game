@@ -52,7 +52,7 @@ export const MULTIPLIER = 60;
 
 
 //7
-export const levelOneMap = [
+export const levelTwoMap = [
   [WALL, WALL, WALL, WALL, WALL, WALL, WALL,],
   [WALL, EMPTY, EMPTY, GOAL, EMPTY, EMPTY, WALL],
   [WALL, EMPTY, EGG, EMPTY, EGG, GOAL, WALL],
@@ -113,13 +113,13 @@ export const levelOneMap = [
 //   [WALL, WALL,  WALL],
 // ];
 
-export const levelTwoMap = [
-  [WALL, WALL,WALL,WALL,WALL,WALL,WALL],
-  [WALL, GOAL,GOAL,EMPTY,EMPTY,EMPTY,WALL],
-  [WALL, EGG, EGG,EMPTY,EMPTY,EGG,WALL],
-  [WALL, PLAYER,EMPTY,EMPTY,EMPTY,GOAL,WALL],
-  [WALL, WALL,WALL,WALL,WALL,WALL,WALL],
-];
+// export const levelOneMap = [
+//   [WALL, WALL,WALL,WALL,WALL,WALL,WALL],
+//   [WALL, GOAL,GOAL,EMPTY,EMPTY,EMPTY,WALL],
+//   [WALL, EGG, EGG,EMPTY,EMPTY,EGG,WALL],
+//   [WALL, PLAYER,EMPTY,EMPTY,EMPTY,GOAL,WALL],
+//   [WALL, WALL,WALL,WALL,WALL,WALL,WALL],
+// ];
 
 
 // export const levelOneMap = [
@@ -133,15 +133,15 @@ export const levelTwoMap = [
 // levelOneMap /levelTwoMap// 
 
 //2
-// export const levelOneMap = [
-//   [WALL, WALL, WALL, WALL, WALL, WALL],
-//   [WALL, EMPTY, WALL, EMPTY, GOAL, WALL],
-//   [WALL, EMPTY, EGG, EMPTY, GOAL, WALL],
-//   [PLAYER, EMPTY, EMPTY, EGG, GOAL, WALL],
-//   [WALL, EMPTY, EGG, EGG, GOAL, WALL],
-//   [WALL, EMPTY, EMPTY, WALL, WALL, WALL],
-//   [WALL, WALL, WALL, WALL, WALL,]
-// ];
+export const levelOneMap = [
+  [WALL, WALL, WALL, WALL, WALL, WALL],
+  [WALL, WALL, WALL, EMPTY, GOAL, WALL],
+  [WALL, EMPTY, EGG, EMPTY, GOAL, WALL],
+  [PLAYER, EMPTY, EMPTY, EGG, GOAL, WALL],
+  [WALL, EMPTY, EGG, EGG, GOAL, WALL],
+  [WALL, EMPTY, EMPTY, WALL, WALL, WALL],
+  [WALL, WALL, WALL, WALL, WALL,]
+];
 
 
 // console.log(playerNode);
